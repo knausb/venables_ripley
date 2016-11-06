@@ -1,0 +1,77 @@
+---
+title: "Chapter 9: Tree-Based Methods"
+author: "Brian Knaus"
+date: "November 6, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = 'center')
+knitr::opts_chunk$set(fig.width = 10)
+knitr::opts_chunk$set(fig.height = 10)
+```
+
+
+
+## 9.2 Implementation in rpart
+
+
+
+```{r}
+library(MASS)
+data(cpus)
+head(cpus)
+```
+
+
+
+```{r}
+library(rpart)
+set.seed(123)
+cpus.rp <- rpart(log10(perf) ~ ., cpus[,2:8], cp = 1e-3)
+cpus.rp
+print(cpus.rp, cp=0.01)
+```
+
+
+
+```{r}
+plot(cpus.rp, uniform = TRUE)
+text(cpus.rp, digits = 3)
+
+#help("plot.rpart")
+```
+
+
+```{r}
+printcp(cpus.rp)
+plotcp(cpus.rp)
+```
+
+
+```{r}
+cpus.rp1 <- prune(cpus.rp, cp = 0.006)
+print(cpus.rp1, digits = 3)
+plot(cpus.rp1, branch = 0.4, uniform = TRUE)
+text(cpus.rp1, digits = 3)
+```
+
+
+Forensic glass
+
+
+```{r, fig.height=6, fig.width=6}
+head(fgl)
+
+set.seed(123)
+fgl.rp <- rpart(type ~ ., fgl, cp = 0.001)
+plotcp(fgl.rp)
+printcp(fgl.rp)
+```
+
+
+
+## 9.3 Implementation in tree
+
+
