@@ -61,13 +61,35 @@ text(cpus.rp1, digits = 3)
 Forensic glass
 
 
-```{r, fig.height=6, fig.width=6}
+```{r, fig.height=8, fig.width=8}
 head(fgl)
+library(RColorBrewer)
 
+palette(brewer.pal(n=9, name = "Set1"))
+par(mfrow=c(3,3))
+for(i in 1:9){
+  hist(fgl[,i], main = colnames(fgl)[i], col = i)
+}
+par(mfrow=c(1,1))
+palette("default")
+```
+
+
+
+```{r, fig.height=6, fig.width=6}
 set.seed(123)
 fgl.rp <- rpart(type ~ ., fgl, cp = 0.001)
 plotcp(fgl.rp)
 printcp(fgl.rp)
+```
+
+
+```{r}
+fgl.rp2 <- prune(fgl.rp, cp = 0.02)
+plot(fgl.rp2, uniform = TRUE)
+text(fgl.rp2, use.n = TRUE)
+fgl.rp2
+summary(fgl.rp2)
 ```
 
 
