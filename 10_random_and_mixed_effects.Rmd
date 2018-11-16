@@ -43,3 +43,66 @@ matrix(round(coef(pet1.lm), 2), 2, 10, byrow = TRUE,
 ```
 
 
+```{r}
+pet2.lm <- lm(Y ~ No - 1 + EP, Petrol)
+anova(pet2.lm, pet1.lm)
+```
+
+
+```{r}
+pet3.lm <- lm(Y ~ SG + VP + V10 + EP, Petrol)
+anova(pet3.lm, pet2.lm)
+```
+
+
+```{r}
+pet3.lme <- lme(Y ~ SG + VP + V10 + EP,
+                random = ~ 1 | No, data = Petrol)
+summary(pet3.lme)
+```
+
+
+```{r}
+pet3.lme <- update(pet3.lme, method = "ML")
+summary(pet3.lme)
+```
+
+
+```{r}
+anova(pet3.lme, pet3.lm)
+```
+
+
+```{r}
+pet4.lme <- update(pet3.lme, fixed = Y ~ V10 + EP)
+anova(pet4.lme, pet3.lme)
+fixed.effects(pet4.lme)
+coef(pet4.lme)
+```
+
+
+```{r}
+pet5.lme <- update(pet4.lme, random = ~ 1 + EP | No)
+anova(pet4.lme, pet5.lme)
+```
+
+
+### A multi-level study
+
+
+## 10.2 Classic nested designs
+
+
+
+## 10.3 Non-linear mixed effects models
+
+
+## 10.4 Generalized linear mixed models
+
+
+## 10.5 GEE models
+
+
+
+
+
