@@ -1,0 +1,45 @@
+---
+title: "Untitled"
+author: "Brian J. Knaus"
+date: "11/15/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+## 10.1 Linear models
+
+
+```{r}
+library(nlme)
+library(MASS) # For the petrol data set.
+data(petrol)
+library(lattice) # xyplot
+```
+
+
+```{r}
+xyplot(Y ~ EP | No, data = petrol,
+       xlab = "ASTM end point (deg. F)",
+       ylab = "Yield as a percent of crude",
+       panel = function(x, y){
+         panel.grid()
+         m <- sort.list(x)
+         panel.xyplot(x[m], y[m], type = "b", cex = 0.5)
+       })
+```
+
+
+```{r}
+Petrol <- petrol
+names(Petrol)
+Petrol[,2:5] <- scale(Petrol[,2:5], scale = FALSE)
+pet1.lm <- lm(Y ~ No/EP - 1, Petrol)
+matrix(round(coef(pet1.lm), 2), 2, 10, byrow = TRUE,
+       dimnames = list(c("b0", "b1"), levels(Petrol$No)))
+```
+
+
