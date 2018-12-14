@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "10: Random and Mixed Effects"
 author: "Brian J. Knaus"
 date: "11/15/2018"
 output: html_document
@@ -89,6 +89,24 @@ anova(pet4.lme, pet5.lme)
 
 ### A multi-level study
 
+
+```{r, eval=FALSE}
+library(MASS)
+nl1 <- nlschools; attach(nl1)
+classMeans <- tapply(IQ, class, meaan)
+nl1$IQave <- classMeans[as.character(class)]
+detach()
+cen <- c("IQ", "IQave", "SES")
+nl1[cen] <- scale(nl1[cen], center = T, scale = F)
+```
+
+
+```{r, eval=FALSE}
+library(nlme)
+options(contrasts = c("contr.treatment", "contr.poly"))
+nl.lme <- lme(lang ~ IQ*COMB + IQave + SES, random = ~ IQ | class, data = nl1)
+summary(nl.lme)
+```
 
 ## 10.2 Classic nested designs
 
