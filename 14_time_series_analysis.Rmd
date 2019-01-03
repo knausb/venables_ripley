@@ -138,12 +138,9 @@ ts.plot(deaths, deaths.stl$sea, dsd)
 
 
 ```{r}
-ts.plot(dsd)
-#
-acf(dsd, type = "partial")
-
+#ts.plot(dsd)
+#acf(dsd, type = "partial")
 #ts.plot(dsd); acf(dsd); 
-
 ```
 
 
