@@ -93,7 +93,7 @@ anova(pet4.lme, pet5.lme)
 ```{r, eval=FALSE}
 library(MASS)
 nl1 <- nlschools; attach(nl1)
-classMeans <- tapply(IQ, class, meaan)
+classMeans <- tapply(IQ, class, mean)
 nl1$IQave <- classMeans[as.character(class)]
 detach()
 cen <- c("IQ", "IQave", "SES")
@@ -108,7 +108,47 @@ nl.lme <- lme(lang ~ IQ*COMB + IQave + SES, random = ~ IQ | class, data = nl1)
 summary(nl.lme)
 ```
 
+
+```{r}
+summary(lm(lang ~ IQ*COMB + SES + class, data = nl1, singular.ok = T), cor = F)
+```
+
+
+```{r}
+nl2 <- cbind(aggregate(nl1[c(1, 7)], list(class = nl1$class), mean), 
+             unique(nl1[c("class", "COMB", "GS")]))
+summary(lm(lang ~ IQave + COMB, data = nl2, weights = GS))
+```
+
+
+### A longitudinal study
+
+
+```{r}
+sitka.lme <- lme(size ~ treat*ordered(Time), random = ~1 | tree,
+                 data = Sitka, method = "ML")
+Sitka <- Sitka
+attach(Sitka)
+Sitka$treatslope <- Time * (treat == "ozone")
+detach()
+sitka.lme2 <- update(sitka.lme, fixed = size ~ ordered(Time) + treat + treatslope)
+anova(sitka.lme, sitka.lme2)
+matrix(fitted(sitka.lme2, level = 0)[c(301:305, 1:5)], 2, 5, byrow = T,
+       dimnames = list(c("control", "ozone"), unique(Sitka$Time)))
+```
+
+
+
 ## 10.2 Classic nested designs
+
+
+```{r}
+library(Rfit)
+summary(raov(Conc ~ Lab/Bat, data = coop, subset = Spc=="S1"))
+
+
+
+```
 
 
 
