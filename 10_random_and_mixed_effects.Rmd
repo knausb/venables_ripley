@@ -109,12 +109,12 @@ summary(nl.lme)
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 summary(lm(lang ~ IQ*COMB + SES + class, data = nl1, singular.ok = T), cor = F)
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 nl2 <- cbind(aggregate(nl1[c(1, 7)], list(class = nl1$class), mean), 
              unique(nl1[c("class", "COMB", "GS")]))
 summary(lm(lang ~ IQave + COMB, data = nl2, weights = GS))
@@ -145,9 +145,87 @@ matrix(fitted(sitka.lme2, level = 0)[c(301:305, 1:5)], 2, 5, byrow = T,
 ```{r}
 library(Rfit)
 summary(raov(Conc ~ Lab/Bat, data = coop, subset = Spc=="S1"))
+```
+
+
+```{r}
+coop <- coop
+#is.random(coop) <- T
+```
+
+
+```{r}
+#is.random(coop$Spc) <- F
+#is.random(coop)
+```
+
+
+```{r}
+#varcomp(Conc ~ Lab/Bat, data = coop, subset = Spc=="S1")
+#varcomp(Conc ~ Lab/Bat, data = coop, subset = Spc=="S1",
+#        method = c("winsor", "minque0"))
+```
+
+
+### Multistratum models
+
+
+#### A split plot experiment
+
+
+```{r}
+oats <- oats
+oats$Nf <- ordered(oats$N, levels = sort(levels(oats$N)))
+```
+
+
+```{r}
+oats.aov <- aov(Y ~ Nf*V + Error(B/V), data = oats, qr = T)
+summary(oats.aov)
+```
+
+
+```{r}
+summary(oats.aov, split = list(Nf = list(L = 1, Dev = 2:3)))
+```
+
+
+```{r}
+plot(fitted(oats.aov[[4]]), studres(oats.aov[[4]]))
+abline(h = 0, lty = 2)
+oats.pr <- proj(oats.aov)
+qqnorm(oats.pr[[4]][,"Residuals"], ylab = "Stratum 4 residuals")
+qqline(oats.pr[[4]][,"Residuals"])
+```
+
+
+#### Tables of means and components of variance
+
+
+```{r}
+oats.aov <- aov(Y ~ N + V + Error(B/V), data = oats, qr = T)
+model.tables(oats.aov, type = "means")
+```
 
 
 
+```{r}
+# is.random(oats$B) <- T
+# varcomp(Y ~ N + V + B/V, data = oats)
+```
+
+
+#### Relationship to lme models
+
+
+```{r}
+lme(Conc ~ 1, random = ~1 | Lab/Bat, data = coop, subset = Spc=="S1")
+```
+
+
+```{r}
+options(contrasts = c("contr.treatment", "contr.poly"))
+#summary(lme(Y ~ N + V, random = -1 | B/V, data = oats))
 ```
 
 
